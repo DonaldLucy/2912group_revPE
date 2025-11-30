@@ -2,8 +2,8 @@
 
 module fa16_rev_wrapped (
     `ifdef USE_POWER_PINS
-    inout wire vdd,
-    inout wire vss,
+    inout wire VDD,
+    inout wire VSS,
     `endif
 
     // Input ports
@@ -29,8 +29,8 @@ module fa16_rev_wrapped (
 
     // Power handling
     `ifndef USE_POWER_PINS
-    wire vdd = 1'b1;
-    wire vss = 1'b0;
+    wire VDD = 1'b1;
+    wire VSS = 1'b0;
     `endif
 
     // Unused macro pins preserved to track full LEF interface
@@ -81,8 +81,8 @@ module fa16_rev_wrapped (
         .s15         (s[15]),
         .c0_f        (c0_f),
         .c0_f_not    (c0_f_not),
-        .vss         (vss),
-        .vdd         (vdd),
+        .VSS         (VSS),
+        .VDD         (VDD),
         .a0_f        (a[0]),
         .a0_not_f    (a_not[0]),
         .b0          (b[0]),
