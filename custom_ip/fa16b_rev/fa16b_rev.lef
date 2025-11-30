@@ -4,7 +4,7 @@ VERSION 5.7 ;
   BUSBITCHARS "[]" ;
 MACRO fa16b_rev
   CLASS BLOCK ;
-  FOREIGN 16b_FA ;
+  FOREIGN fa16b_rev ;
   ORIGIN 0.000 0.000 ;
   SIZE 150.000 BY 340.000 ;
   PIN c15_not
