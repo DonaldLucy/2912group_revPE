@@ -1,3 +1,4 @@
+// fa16_rev_control.sv
 // This takes in fa16_rev_wrapped, and achieves bidirectional control under signal 'dir'
 /*
 Wrapping Structure:
@@ -13,8 +14,8 @@ Outter Logic <-> f_/r_ Port <-> fa16_rev_ctrl <-> pin_* bus <-> fa16_rev_wrapped
 
 module fa16_rev_ctrl (
 `ifdef USE_POWER_PINS
-    inout wire vdd,
-    inout wire vss,
+    inout wire VDD,
+    inout wire VSS,
 `endif
     input  wire        dir,      // 0: forward  (A,B,C0_f,Z -> S,a_b,C0_b,C15)
                                  // 1: backward (S,a_b,C0_b,C15 -> A,B,C0_f,Z)
@@ -71,10 +72,42 @@ module fa16_rev_ctrl (
     // ============================================================
     // 2) Instantiating the reversible adder core
     // ============================================================
+    `ifdef SIM_REV_MODEL
+        // SImulationL Explicit Dir
+
+        fa16_rev_wrapped u_rev (
+        `ifdef USE_POWER_PINS
+            .VDD     (VDD),
+            .VSS     (VSS),
+        `endif
+            // pass direction into the behavioural macro
+            .dir     (dir), 
+
+            .a        (pin_a),
+            .a_not    (pin_a_not),
+            .b        (pin_b),
+            .b_not    (pin_b_not),
+            .c0_f     (pin_c0_f),
+            .c0_f_not (pin_c0_f_not),
+            .z        (pin_z),
+            .z_not    (pin_z_not),
+
+            .s        (pin_s),
+            .s_not    (pin_s_not),
+            .a_b      (pin_a_b),
+            .a_not_b  (pin_a_not_b),
+            .c0_b     (pin_c0_b),
+            .c0_b_not (pin_c0_b_not),
+            .c15      (pin_c15),
+            .c15_not  (pin_c15_not)
+        );
+
+`else
+    // Synthesis / Place & Route: hard macro without dir
     fa16_rev_wrapped u_rev (
     `ifdef USE_POWER_PINS
-        .vdd     (vdd),
-        .vss     (vss),
+        .VDD     (VDD),
+        .VSS     (VSS),
     `endif
         .a        (pin_a),
         .a_not    (pin_a_not),
@@ -94,6 +127,8 @@ module fa16_rev_ctrl (
         .c15      (pin_c15),
         .c15_not  (pin_c15_not)
     );
+
+`endif
 
     // ============================================================
     // 3) Forward-Backward control drive
